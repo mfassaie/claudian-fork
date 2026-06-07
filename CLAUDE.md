@@ -4,6 +4,23 @@
 
 Claudian is an Obsidian plugin that embeds provider-backed chat runtimes in a sidebar and inline-edit flow. Claude is the default provider. Codex is optional and joins the same conversation model through `Conversation.providerId` plus provider-owned `providerState`.
 
+## Fork
+
+This repository is a personal fork of the upstream project.
+
+- **origin**: `mfassaie/claudian-fork` (this fork; `gh` default repo, push/pull target).
+- **upstream**: `YishenTu/claudian` (original project; pull only, for syncing).
+- PRs and `gh` issue/PR commands act on the fork by default. To target upstream explicitly, pass `--repo YishenTu/claudian`.
+
+### Local dev installation
+
+Builds can auto-install into a local Obsidian vault for testing. `esbuild.config.mjs` copies `main.js`, `manifest.json`, and `styles.css` into `<OBSIDIAN_VAULT>/.obsidian/plugins/claudian/` after every successful build, gated on the `OBSIDIAN_VAULT` env var.
+
+- Configured via `.env.local` (gitignored) at the repo root: `OBSIDIAN_VAULT=<vault root>`.
+- Current target: `C:\Users\Falconer\Development\mfassaie\falk` (which also serves as the `falk-local` Claude plugin marketplace and is a real Obsidian vault).
+- `npm run dev` (watch) and `npm run build` (one-shot production) both honour the copy hook. CSS is not watched; re-run for `src/style/` edits.
+- Obsidian does not auto-reload; toggle the plugin or use the Hot Reload community plugin.
+
 ## Architecture Status
 
 - Product status: Claudian is a multi-provider product. Claude is the full-feature provider. Codex is opt-in and currently supports send, stream, cancel, resume, history reload, fork, plan mode, image attachments, inline edit, `#` instruction mode, `$` skills, and subagents. Unsupported or gated Codex surfaces are rewind, runtime-discovered provider commands, in-app MCP management, and Claude plugin integration.
