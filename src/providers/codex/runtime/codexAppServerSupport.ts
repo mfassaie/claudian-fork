@@ -12,8 +12,8 @@ const CODEX_APP_SERVER_CLIENT_INFO = Object.freeze({
   version: '1.0.0',
 });
 
-export function getCodexAppServerWorkingDirectory(plugin: ClaudianPlugin): string {
-  return getVaultPath(plugin.app) ?? process.cwd();
+export function getCodexAppServerWorkingDirectory(plugin: ClaudianPlugin, projectDir?: string | null): string {
+  return projectDir ?? getVaultPath(plugin.app) ?? process.cwd();
 }
 
 export function buildCodexAppServerEnvironment(
@@ -36,11 +36,12 @@ export function buildCodexAppServerEnvironment(
 export function resolveCodexAppServerLaunchSpec(
   plugin: ClaudianPlugin,
   providerId: ProviderId = 'codex',
+  projectDir?: string | null,
 ): CodexLaunchSpec {
   return buildCodexLaunchSpec({
     settings: plugin.settings,
     resolvedCliCommand: plugin.getResolvedProviderCliPath(providerId),
-    hostVaultPath: getCodexAppServerWorkingDirectory(plugin),
+    hostVaultPath: getCodexAppServerWorkingDirectory(plugin, projectDir),
     env: buildCodexAppServerEnvironment(plugin, providerId),
   });
 }

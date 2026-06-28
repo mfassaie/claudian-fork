@@ -74,6 +74,7 @@ describe('SessionsPanel', () => {
     const chatView = { getTabManager: () => tabManager };
 
     plugin = {
+      app: { vault: { adapter: { basePath: '/mock/vault' } } },
       settings: { maxTabs: 3 },
       getActiveChatView: jest.fn(() => (options.hasChatView === false ? null : chatView)),
       getConversationList: jest.fn(() => options.conversations ?? []),

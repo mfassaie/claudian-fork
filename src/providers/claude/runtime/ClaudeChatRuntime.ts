@@ -139,6 +139,7 @@ export class ClaudianService implements ChatRuntime {
   private askUserQuestionCallback: AskUserQuestionCallback | null = null;
   private exitPlanModeCallback: ExitPlanModeCallback | null = null;
   private permissionModeSyncCallback: ((sdkMode: string) => void) | null = null;
+  private readonly projectDir: string | null;
   private vaultPath: string | null = null;
   private currentExternalContextPaths: string[] = [];
   private readyStateListeners = new Set<(ready: boolean) => void>();
@@ -193,8 +194,9 @@ export class ClaudianService implements ChatRuntime {
     return this.plugin;
   }
 
-  constructor(plugin: ClaudianPlugin, services: ClaudeRuntimeServices | McpServerManager) {
+  constructor(plugin: ClaudianPlugin, services: ClaudeRuntimeServices | McpServerManager, projectDir?: string) {
     this.plugin = plugin;
+    this.projectDir = projectDir ?? null;
     const legacyPlugin = this.getLegacyPluginDeps();
 
     if ('mcpManager' in services) {
@@ -1104,7 +1106,7 @@ export class ClaudianService implements ChatRuntime {
     const conversationHistory = normalized.conversationHistory;
     const queryOptions = normalized.queryOptions;
 
-    const vaultPath = getVaultPath(this.plugin.app);
+    const vaultPath = this.projectDir ?? getVaultPath(this.plugin.app);
     if (!vaultPath) {
       yield { type: 'error', content: 'Could not determine vault path' };
       return;

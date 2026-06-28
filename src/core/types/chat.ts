@@ -80,6 +80,8 @@ export interface Conversation {
   currentNote?: string;
   /** Session-specific external context paths (directories with full access). Resets on new session. */
   externalContextPaths?: string[];
+  /** CLI working directory for this session (locked at creation; undefined = vault root). */
+  projectDir?: string;
   /** Context window usage information. */
   usage?: UsageInfo;
   /** Status of AI title generation. */
@@ -123,6 +125,8 @@ export interface SessionMetadata {
   providerState?: Record<string, unknown>;
   currentNote?: string;
   externalContextPaths?: string[];
+  /** CLI working directory for this session (locked at creation; undefined = vault root). */
+  projectDir?: string;
   enabledMcpServers?: string[];
   usage?: UsageInfo;
   /** Assistant checkpoint identifier for resumeAtMessageId after rewind. */

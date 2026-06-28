@@ -618,7 +618,8 @@ export async function initializeTabService(
     tab.service = null;
     tab.serviceInitialized = false;
 
-    const runtime = ProviderRegistry.createChatRuntime({ plugin, providerId });
+    const projectDir = conversation?.projectDir ?? plugin.settings.projectDir as string | undefined;
+    const runtime = ProviderRegistry.createChatRuntime({ plugin, providerId, projectDir });
     service = runtime;
     unsubscribeReadyState = runtime.onReadyStateChange(() => {});
     tab.dom.eventCleanups.push(() => unsubscribeReadyState?.());
@@ -1046,6 +1047,7 @@ export interface ForkContext {
   /** 1-based index used for fork title suffix (counts only non-interrupt user messages). */
   forkAtUserMessage?: number;
   currentNote?: string;
+  projectDir?: string;
 }
 
 function deepCloneMessages(messages: ChatMessage[]): ChatMessage[] {
@@ -1070,6 +1072,7 @@ interface ForkSource {
   sourceProviderState?: Record<string, unknown>;
   sourceTitle?: string;
   currentNote?: string;
+  projectDir?: string;
 }
 
 /**
@@ -1101,6 +1104,7 @@ function resolveForkSource(tab: TabData, plugin: ClaudianPlugin): ForkSource | n
     sourceProviderState: conversation?.providerState,
     sourceTitle: conversation?.title,
     currentNote: conversation?.currentNote,
+    projectDir: conversation?.projectDir,
   };
 }
 
@@ -1152,6 +1156,7 @@ async function handleForkRequest(
     sourceTitle: source.sourceTitle,
     forkAtUserMessage: countUserMessagesForForkTitle(msgs.slice(0, userIdx + 1)),
     currentNote: source.currentNote,
+    projectDir: source.projectDir,
   });
 }
 
@@ -1203,6 +1208,7 @@ async function handleForkAll(
     sourceTitle: source.sourceTitle,
     forkAtUserMessage: countUserMessagesForForkTitle(msgs) + 1,
     currentNote: source.currentNote,
+    projectDir: source.projectDir,
   });
 }
 

@@ -5,8 +5,20 @@ import type { ProviderId } from '../../../core/providers/types';
 import type { ConversationMeta } from '../../../core/types';
 import type ClaudianPlugin from '../../../main';
 import { createProviderIconSvg } from '../../../shared/icons';
+import { getVaultPath } from '../../../utils/path';
 import type { TabManager } from '../tabs/TabManager';
 import type { TabBarItem } from '../tabs/types';
+
+interface ElectronOpenDialogResult {
+  canceled: boolean;
+  filePaths: string[];
+}
+
+interface ElectronRemoteApi {
+  dialog: {
+    showOpenDialog(options: { properties: string[]; title: string }): Promise<ElectronOpenDialogResult>;
+  };
+}
 
 /**
  * Plain-DOM renderer for the right-sidebar session switcher.
@@ -28,6 +40,7 @@ export class SessionsPanel {
     this.containerEl.empty();
 
     this.renderNewSessionButton();
+    this.renderProjectDirSelector();
 
     const tabManager = this.plugin.getActiveChatView()?.getTabManager() ?? null;
     const openItems = tabManager?.getTabBarItems() ?? [];
@@ -64,6 +77,63 @@ export class SessionsPanel {
         }
       }, 'Failed to create session');
     });
+  }
+
+  private renderProjectDirSelector(): void {
+    const currentDir = (this.plugin.settings.projectDir as string | undefined)
+      ?? getVaultPath(this.plugin.app)
+      ?? '';
+    const dirName = currentDir.split(/[/\\]/).filter(Boolean).pop() ?? currentDir;
+    const isDefault = !this.plugin.settings.projectDir;
+
+    const row = this.containerEl.createDiv({ cls: 'claudian-sessions-project-dir' });
+    const iconEl = row.createSpan({ cls: 'claudian-sessions-project-dir-icon' });
+    setIcon(iconEl, 'folder-open');
+    const label = row.createSpan({
+      cls: 'claudian-sessions-project-dir-label',
+      text: dirName,
+    });
+    label.setAttribute('title', currentDir);
+
+    row.addEventListener('click', () => {
+      void this.openProjectDirPicker();
+    });
+
+    row.addEventListener('contextmenu', (e) => {
+      if (isDefault) return;
+      e.preventDefault();
+      const menu = new Menu();
+      menu.addItem((item) => item
+        .setTitle('Reset to vault')
+        .setIcon('rotate-ccw')
+        .onClick(() => {
+          delete this.plugin.settings.projectDir;
+          void this.plugin.saveSettings().then(() => this.render());
+        }));
+      menu.showAtMouseEvent(e);
+    });
+  }
+
+  private async openProjectDirPicker(): Promise<void> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports -- Electron remote is exposed only at runtime in Obsidian's renderer.
+      const { remote } = require('electron') as { remote?: ElectronRemoteApi };
+      if (!remote) {
+        throw new Error('Electron remote API is unavailable');
+      }
+      const result = await remote.dialog.showOpenDialog({
+        properties: ['openDirectory'],
+        title: 'Select project directory',
+      });
+      if (result.canceled || !result.filePaths[0]) return;
+
+      const selected = result.filePaths[0];
+      this.plugin.settings.projectDir = selected;
+      await this.plugin.saveSettings();
+      this.render();
+    } catch {
+      new Notice('Failed to open folder picker');
+    }
   }
 
   private renderOpenTabs(items: TabBarItem[], tabManager: TabManager | null): void {

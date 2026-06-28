@@ -400,6 +400,7 @@ export class ConversationController {
       const conversation = await plugin.createConversation({
         providerId: agentService?.providerId,
         sessionId: initialSessionId,
+        projectDir: plugin.settings.projectDir,
       });
       state.currentConversationId = conversation.id;
     }

@@ -568,6 +568,7 @@ export class TabManager implements TabManagerInterface {
   private async createForkConversation(context: ForkContext): Promise<string> {
     const conversation = await this.plugin.createConversation({
       providerId: context.providerId,
+      projectDir: context.projectDir,
     });
 
     const title = context.sourceTitle

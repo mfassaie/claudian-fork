@@ -42,6 +42,7 @@ export const DEFAULT_CHAT_PROVIDER_ID = 'claude' as const satisfies ProviderId;
 export interface CreateChatRuntimeOptions {
   plugin: ClaudianPlugin;
   providerId?: ProviderId;
+  projectDir?: string;
 }
 
 /**

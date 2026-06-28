@@ -113,6 +113,9 @@ export interface ClaudianSettings {
   systemPrompt: string;
   persistentExternalContextPaths: string[];
 
+  // Project directory override for new sessions (undefined = vault root)
+  projectDir?: string;
+
   // Environment
   sharedEnvironmentVariables: string;
   envSnippets: EnvSnippet[];

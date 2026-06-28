@@ -41,6 +41,43 @@
   font-weight: 500;
 }
 
+.claudian-sessions-project-dir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.claudian-sessions-project-dir:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.claudian-sessions-project-dir-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.claudian-sessions-project-dir-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.claudian-sessions-project-dir-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .claudian-sessions-section-header {
   padding: 8px 6px 4px;
   font-size: 11px;

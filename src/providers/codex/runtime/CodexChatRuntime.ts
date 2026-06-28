@@ -144,8 +144,11 @@ export class CodexChatRuntime implements ChatRuntime {
   private canceled = false;
   private turnMetadata: ChatTurnMetadata = {};
 
-  constructor(plugin: ClaudianPlugin) {
+  private readonly projectDir: string | null;
+
+  constructor(plugin: ClaudianPlugin, projectDir?: string) {
     this.plugin = plugin;
+    this.projectDir = projectDir ?? null;
   }
 
   getCapabilities(): Readonly<ProviderCapabilities> {
@@ -216,7 +219,7 @@ export class CodexChatRuntime implements ChatRuntime {
   async ensureReady(options?: ChatRuntimeEnsureReadyOptions): Promise<boolean> {
     const promptSettings = this.getSystemPromptSettings();
     const promptKey = computeSystemPromptKey(promptSettings);
-    const launchSpec = resolveCodexAppServerLaunchSpec(this.plugin, this.providerId);
+    const launchSpec = resolveCodexAppServerLaunchSpec(this.plugin, this.providerId, this.projectDir);
     const clientConfigKey = [promptKey, JSON.stringify({
       command: launchSpec.command,
       args: launchSpec.args,

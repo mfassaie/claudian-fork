@@ -1123,6 +1123,7 @@ export class InputController {
       const conversation = await plugin.createConversation({
         providerId: this.getActiveProviderId(),
         sessionId,
+        projectDir: plugin.settings.projectDir,
       });
       state.currentConversationId = conversation.id;
     }

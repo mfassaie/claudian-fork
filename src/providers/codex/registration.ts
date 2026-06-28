@@ -19,7 +19,7 @@ export const codexProviderRegistration: ProviderRegistration = {
   environmentKeyPatterns: [/^OPENAI_/i, /^CODEX_/i],
   chatUIConfig: codexChatUIConfig,
   settingsReconciler: codexSettingsReconciler,
-  createRuntime: ({ plugin }) => new CodexChatRuntime(plugin),
+  createRuntime: ({ plugin, projectDir }) => new CodexChatRuntime(plugin, projectDir),
   createTitleGenerationService: (plugin) => new CodexTitleGenerationService(plugin),
   createInstructionRefineService: (plugin) => new CodexInstructionRefineService(plugin),
   createInlineEditService: (plugin) => new CodexInlineEditService(plugin),

@@ -719,6 +719,7 @@ export default class ClaudianPlugin extends Plugin {
   async createConversation(options?: {
     providerId?: ProviderId;
     sessionId?: string;
+    projectDir?: string;
   }): Promise<Conversation> {
     const providerId = options?.providerId ?? DEFAULT_CHAT_PROVIDER_ID;
     const sessionId = options?.sessionId;
@@ -731,6 +732,7 @@ export default class ClaudianPlugin extends Plugin {
       updatedAt: Date.now(),
       sessionId: sessionId ?? null,
       messages: [],
+      projectDir: options?.projectDir,
     };
 
     this.conversations.unshift(conversation);
